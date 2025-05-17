@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
+import TaskEditDialog from '@/components/task-edit-dialog'
 
 interface Task {
   id: string
@@ -26,6 +27,7 @@ interface Task {
   completed: boolean
   createdAt: string
   updatedAt: string
+  userId: string
 }
 
 const priorityColors = {
@@ -45,6 +47,7 @@ export default function TaskList() {
   const [tasks, setTasks] = useState<Task[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [editTask, setEditTask] = useState<Task | null>(null)
 
   const fetchTasks = async () => {
     if (!isLoaded || !isSignedIn) return
@@ -110,6 +113,11 @@ export default function TaskList() {
       console.error('Erreur toggleTaskCompletion:', err)
       setError(err instanceof Error ? err.message : 'Une erreur est survenue')
     }
+  }
+
+  const handleTaskUpdated = (updatedTask: Task) => {
+    setTasks(tasks.map(task => task.id === updatedTask.id ? updatedTask : task))
+    setEditTask(null)
   }
 
   const deleteTask = async (taskId: string) => {
@@ -200,7 +208,11 @@ export default function TaskList() {
             </Button>
             
             <div className="space-x-2">
-              <Button variant="outline" size="icon">
+              <Button 
+                variant="outline" 
+                size="icon"
+                onClick={() => setEditTask(task)}
+              >
                 <Edit className="h-4 w-4" />
               </Button>
               <Button
@@ -214,6 +226,15 @@ export default function TaskList() {
           </CardFooter>
         </Card>
       ))}
+
+      {editTask && (
+        <TaskEditDialog
+          task={editTask}
+          open={!!editTask}
+          onOpenChange={() => setEditTask(null)}
+          onTaskUpdated={handleTaskUpdated}
+        />
+      )}
     </div>
   )
 } 

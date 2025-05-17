@@ -1,4 +1,6 @@
 import type { Task } from "./definitions"
+import prisma from "@/lib/prisma"
+import { auth } from "@clerk/nextjs/server"
 
 // Mock database for tasks (replace with actual database in production)
 let tasks: Task[] = [
@@ -35,59 +37,111 @@ let tasks: Task[] = [
 ]
 
 export async function getTasks(): Promise<Task[]> {
-  // In a real app, you would query your database
+  const { userId } = await auth()
+  
+  if (!userId) {
+    throw new Error("Non autorisé")
+  }
+
+  const tasks = await prisma.task.findMany({
+    where: {
+      userId: userId
+    },
+    orderBy: {
+      createdAt: "desc"
+    }
+  })
+
   return tasks
 }
 
 export async function getTaskById(taskId: string): Promise<Task | null> {
-  const task = tasks.find((t) => t.id === taskId)
-  return task || null
+  const { userId } = await auth()
+  
+  if (!userId) {
+    throw new Error("Non autorisé")
+  }
+
+  const task = await prisma.task.findUnique({
+    where: {
+      id: taskId,
+      userId: userId
+    }
+  })
+
+  return task
 }
 
 export async function createTaskInDb(task: Omit<Task, "id" | "createdAt" | "updatedAt">): Promise<Task> {
-  const newTask: Task = {
-    ...task,
-    id: Math.random().toString(36).substring(2, 9),
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+  const { userId } = await auth()
+  
+  if (!userId) {
+    throw new Error("Non autorisé")
   }
 
-  tasks.push(newTask)
+  const newTask = await prisma.task.create({
+    data: {
+      ...task,
+      userId
+    }
+  })
+
   return newTask
 }
 
 export async function updateTaskInDb(task: Task): Promise<Task> {
-  const index = tasks.findIndex((t) => t.id === task.id)
-
-  if (index === -1) {
-    throw new Error("Task not found")
+  const { userId } = await auth()
+  
+  if (!userId) {
+    throw new Error("Non autorisé")
   }
 
-  const updatedTask = {
-    ...task,
-    updatedAt: new Date().toISOString(),
-  }
+  const updatedTask = await prisma.task.update({
+    where: {
+      id: task.id,
+      userId: userId
+    },
+    data: {
+      ...task,
+      updatedAt: new Date()
+    }
+  })
 
-  tasks[index] = updatedTask
   return updatedTask
 }
 
 export async function deleteTaskFromDb(taskId: string): Promise<void> {
-  tasks = tasks.filter((task) => task.id !== taskId)
+  const { userId } = await auth()
+  
+  if (!userId) {
+    throw new Error("Non autorisé")
+  }
+
+  await prisma.task.delete({
+    where: {
+      id: taskId,
+      userId: userId
+    }
+  })
 }
 
 export async function completeTaskInDb(taskId: string, completed: boolean): Promise<Task> {
-  const task = tasks.find((t) => t.id === taskId)
-
-  if (!task) {
-    throw new Error("Task not found")
+  const { userId } = await auth()
+  
+  if (!userId) {
+    throw new Error("Non autorisé")
   }
 
-  const updatedTask = {
-    ...task,
-    completed,
-    updatedAt: new Date().toISOString(),
-  }
+  const updatedTask = await prisma.task.update({
+    where: {
+      id: taskId,
+      userId: userId
+    },
+    data: {
+      completed,
+      updatedAt: new Date()
+    }
+  })
 
-  return updateTaskInDb(updatedTask)
+  return updatedTask
 }

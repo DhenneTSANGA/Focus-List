@@ -29,6 +29,19 @@ export default function Navbar() {
             Trello
           </span>
         </Link>
+
+        {/* Navigation centrale */}
+        {isSignedIn && (
+          <nav className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            <Link 
+              href="/tasks" 
+              className="text-sm font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-violet-500 hover:opacity-80 transition-opacity px-4 py-2"
+            >
+              Mes tâches
+            </Link>
+          </nav>
+        )}
+
         <nav className="flex items-center gap-6">
           {!isSignedIn ? (
             <>

@@ -6,7 +6,7 @@ import { useClerk, useUser } from "@clerk/nextjs"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
 import DashboardSidebar from "./dashboard-sidebar"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -36,6 +36,7 @@ export default function DashboardHeader() {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="p-0">
+              <SheetTitle className="sr-only">Menu de navigation</SheetTitle>
               <DashboardSidebar />
             </SheetContent>
           </Sheet>

@@ -20,7 +20,7 @@ export default function DashboardSidebar() {
     },
     {
       name: "Tâches",
-      href: "/dashboard/tasks",
+      href: "/tasks",
       icon: CheckSquare,
     },
     {

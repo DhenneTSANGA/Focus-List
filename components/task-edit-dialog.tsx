@@ -29,6 +29,7 @@ interface TaskEditDialogProps {
 export default function TaskEditDialog({ task, open, onOpenChange, onTaskUpdated }: TaskEditDialogProps) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [title, setTitle] = useState(task.title)
   const [description, setDescription] = useState(task.description)
   const [priority, setPriority] = useState(task.priority)
@@ -39,6 +40,8 @@ export default function TaskEditDialog({ task, open, onOpenChange, onTaskUpdated
     if (!title || !dueDate) return
 
     setLoading(true)
+    setError(null)
+    
     try {
       const updatedTask = await updateTask({
         id: task.id,
@@ -53,9 +56,11 @@ export default function TaskEditDialog({ task, open, onOpenChange, onTaskUpdated
       })
 
       onTaskUpdated(updatedTask)
+      onOpenChange(false)
       router.refresh()
     } catch (error) {
       console.error("Failed to update task:", error)
+      setError(error instanceof Error ? error.message : 'Une erreur est survenue lors de la mise à jour')
     } finally {
       setLoading(false)
     }
@@ -70,6 +75,11 @@ export default function TaskEditDialog({ task, open, onOpenChange, onTaskUpdated
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="px-6 py-4 space-y-4">
+            {error && (
+              <div className="text-sm text-red-500 bg-red-50 p-2 rounded">
+                {error}
+              </div>
+            )}
             <div className="grid gap-2">
               <Label htmlFor="title">Titre</Label>
               <Input
@@ -100,9 +110,9 @@ export default function TaskEditDialog({ task, open, onOpenChange, onTaskUpdated
                     <SelectValue placeholder="Sélectionner une priorité" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="low">Basse</SelectItem>
-                    <SelectItem value="medium">Moyenne</SelectItem>
-                    <SelectItem value="high">Haute</SelectItem>
+                    <SelectItem value="LOW">Basse</SelectItem>
+                    <SelectItem value="MEDIUM">Moyenne</SelectItem>
+                    <SelectItem value="HIGH">Haute</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

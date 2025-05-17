@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
 
@@ -6,37 +7,127 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-background to-muted/20">
       <main className="flex-1">
-        <section className="py-20 md:py-28 lg:py-36">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center text-center space-y-10">
-              <div className="space-y-4 max-w-3xl">
-                <h1 className="text-4xl md:text-6xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-violet-500">
-                  Organisez votre vie, simplifiez votre quotidien
-                </h1>
-                <p className="text-xl text-muted-foreground max-w-[700px] mx-auto">
-                  Une application intuitive et élégante pour gérer vos tâches, atteindre vos objectifs et rester
-                  productif.
-                </p>
+        <section className="relative py-20 md:py-28 lg:py-32 overflow-hidden">
+          {/* Cercles décoratifs en arrière-plan */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute -top-40 -right-40 w-80 h-80 rounded-full bg-primary/10 blur-3xl"></div>
+            <div className="absolute -bottom-40 -left-40 w-80 h-80 rounded-full bg-violet-500/10 blur-3xl"></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-to-b from-background via-background/80 to-background/20"></div>
+          </div>
+
+          <div className="container relative z-10 px-4 md:px-6">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              {/* Contenu texte */}
+              <div className="flex flex-col space-y-8 text-center lg:text-left">
+                <div className="space-y-6">
+                  <div className="inline-block animate-fade-in">
+                    <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-primary/10 text-primary ring-1 ring-primary/20">
+                      ✨ Découvrez la nouvelle version
+                    </div>
+                  </div>
+                  
+                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter">
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-violet-500 to-pink-500">
+                      Organisez votre vie,
+                    </span>
+                    <br />
+                    simplifiez votre quotidien
+                  </h1>
+                  
+                  <p className="text-xl text-muted-foreground max-w-[600px] mx-auto lg:mx-0">
+                    Une application intuitive et élégante pour gérer vos tâches, atteindre vos objectifs et rester
+                    productif. Commencez dès aujourd'hui.
+                  </p>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                  <Link href="/sign-up">
+                    <Button
+                      size="lg"
+                      className="rounded-full px-8 shadow-lg hover:shadow-xl transition-all bg-gradient-to-r from-primary to-violet-500 hover:from-primary/90 hover:to-violet-500/90"
+                    >
+                      Commencer gratuitement
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </Link>
+                  <Link href="/tasks">
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      className="rounded-full px-8"
+                    >
+                      Voir la démo
+                    </Button>
+                  </Link>
+                </div>
+
+                {/* Statistiques */}
+                <div className="grid grid-cols-3 gap-8 pt-8 mt-4 border-t border-border/50">
+                  <div className="text-center lg:text-left">
+                    <div className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-violet-500">10k+</div>
+                    <div className="text-sm text-muted-foreground mt-1">Utilisateurs actifs</div>
+                  </div>
+                  <div className="text-center lg:text-left">
+                    <div className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-violet-500 to-pink-500">1M+</div>
+                    <div className="text-sm text-muted-foreground mt-1">Tâches créées</div>
+                  </div>
+                  <div className="text-center lg:text-left">
+                    <div className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-primary">99%</div>
+                    <div className="text-sm text-muted-foreground mt-1">Satisfaction</div>
+                  </div>
+                </div>
               </div>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link href="/tasks">
-                  <Button
-                    size="lg"
-                    className="rounded-full px-8 shadow-lg hover:shadow-xl transition-all bg-gradient-to-r from-primary to-violet-500 hover:from-primary/90 hover:to-violet-500/90"
-                  >
-                    Commencer gratuitement
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
-                <Link href="/sign-in">
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="rounded-full px-8 shadow-sm hover:shadow-md transition-all"
-                  >
-                    Se connecter
-                  </Button>
-                </Link>
+
+              {/* Image d'illustration */}
+              <div className="relative lg:ml-auto">
+                <div className="relative w-full max-w-[600px] mx-auto aspect-square">
+                  <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-violet-500/20 rounded-full blur-3xl"></div>
+                  <div className="relative bg-gradient-to-b from-background to-background/5 rounded-3xl p-4 backdrop-blur-sm border border-border/50">
+                    <Image
+                      src="/pic1.avif"
+                      alt="Illustration de l'application de gestion de tâches"
+                      width={600}
+                      height={600}
+                      className="w-full h-auto rounded-2xl shadow-2xl"
+                      priority
+                    />
+                    {/* Éléments décoratifs flottants */}
+                    <div className="absolute -top-8 -right-8 w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center backdrop-blur-sm border border-border/50">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="text-primary"
+                      >
+                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                        <path d="m9 12 2 2 4-4" />
+                      </svg>
+                    </div>
+                    <div className="absolute -bottom-8 -left-8 w-16 h-16 bg-violet-500/10 rounded-full flex items-center justify-center backdrop-blur-sm border border-border/50">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="text-violet-500"
+                      >
+                        <path d="M12 8v4l2 2" />
+                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

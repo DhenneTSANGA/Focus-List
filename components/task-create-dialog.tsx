@@ -28,7 +28,7 @@ export default function TaskCreateDialog({ open, onOpenChange }: TaskCreateDialo
   const [loading, setLoading] = useState(false)
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
-  const [priority, setPriority] = useState("medium")
+  const [priority, setPriority] = useState("MEDIUM")
   const [dueDate, setDueDate] = useState<Date | undefined>(new Date(Date.now() + 24 * 60 * 60 * 1000))
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -47,7 +47,7 @@ export default function TaskCreateDialog({ open, onOpenChange }: TaskCreateDialo
       // Reset form
       setTitle("")
       setDescription("")
-      setPriority("medium")
+      setPriority("MEDIUM")
       setDueDate(new Date(Date.now() + 24 * 60 * 60 * 1000))
 
       // Close dialog and refresh tasks
@@ -99,9 +99,9 @@ export default function TaskCreateDialog({ open, onOpenChange }: TaskCreateDialo
                     <SelectValue placeholder="Sélectionner une priorité" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="low">Basse</SelectItem>
-                    <SelectItem value="medium">Moyenne</SelectItem>
-                    <SelectItem value="high">Haute</SelectItem>
+                    <SelectItem value="LOW">Basse</SelectItem>
+                    <SelectItem value="MEDIUM">Moyenne</SelectItem>
+                    <SelectItem value="HIGH">Haute</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
