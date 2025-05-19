@@ -1,0 +1,29 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# JS/TS files
+*.js text
+*.jsx text
+*.ts text
+*.tsx text
+
+# JSON files
+*.json text
+
+# YAML files
+*.yaml text
+*.yml text
+
+# Lock files
+pnpm-lock.yaml text
+package-lock.json text
+yarn.lock text
+
+# Documentation
+*.md text
+*.txt text
+
+# Config files
+.env* text
+.gitattributes text
+.gitignore text 

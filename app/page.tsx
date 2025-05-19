@@ -41,7 +41,7 @@ export default function Home() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                  <Link href="/sign-up">
+                  <Link href="/tasks">
                     <Button
                       size="lg"
                       className="rounded-full px-8 shadow-lg hover:shadow-xl transition-all bg-gradient-to-r from-primary to-violet-500 hover:from-primary/90 hover:to-violet-500/90"
@@ -217,24 +217,24 @@ export default function Home() {
                 Conçue pour vous offrir la meilleure expérience utilisateur possible
               </p>
             </div>
-            <div className="relative mx-auto max-w-4xl">
+            <div className="relative mx-auto max-w-6xl">
               <div className="rounded-xl overflow-hidden shadow-2xl border border-border/50">
                 <div className="aspect-[16/9] bg-muted/30 relative">
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-full max-w-3xl bg-background/80 backdrop-blur-sm rounded-lg shadow-lg p-4 border border-border/50">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-2">
-                          <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-primary-foreground flex items-center justify-center text-white font-bold">
+                    <div className="w-full max-w-5xl bg-background/80 backdrop-blur-sm rounded-lg shadow-lg p-6 border border-border/50">
+                      <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center gap-3">
+                          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary to-primary-foreground flex items-center justify-center text-white font-bold">
                             T
                           </div>
-                          <span className="font-bold">Trello</span>
+                          <span className="font-bold text-lg">Trello</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
+                          <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
+                              width="20"
+                              height="20"
                               viewBox="0 0 24 24"
                               fill="none"
                               stroke="currentColor"
@@ -249,12 +249,26 @@ export default function Home() {
                           </div>
                         </div>
                       </div>
-                      <div className="grid grid-cols-3 gap-4">
+                      <div className="grid grid-cols-3 gap-6">
                         <div className="col-span-1">
-                          <div className="bg-muted/50 rounded-lg p-3 h-32"></div>
+                          <div className="bg-muted/50 rounded-lg p-4 h-48">
+                            <Image
+                              src="/pic4.avif"
+                              alt="Interface de gestion de tâches"
+                              width={300}
+                              height={300}
+                              className="w-full h-full object-cover rounded-lg"
+                            />
+                          </div>
                         </div>
                         <div className="col-span-2">
-                          <div className="bg-muted/50 rounded-lg p-3 h-32"></div>
+                          <div className="bg-muted/50 rounded-lg p-6 h-48">
+                            <h3 className="text-xl font-semibold mb-3">Gérez vos tâches efficacement</h3>
+                            <p className="text-base text-muted-foreground">
+                              Une interface claire et organisée pour suivre vos projets et atteindre vos objectifs. 
+                              Visualisez vos progrès et restez productif.
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -274,12 +288,12 @@ export default function Home() {
               <p className="text-muted-foreground mb-8 max-w-[600px] mx-auto">
                 Rejoignez des milliers d'utilisateurs qui organisent déjà leur vie avec Trello
               </p>
-              <Link href="/sign-up">
+              <Link href="/tasks">
                 <Button
                   size="lg"
                   className="rounded-full px-8 shadow-lg hover:shadow-xl transition-all bg-gradient-to-r from-primary to-violet-500 hover:from-primary/90 hover:to-violet-500/90"
                 >
-                  Créer un compte gratuitement
+                  Commencer gratuitement
                 </Button>
               </Link>
             </div>

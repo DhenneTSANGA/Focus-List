@@ -21,14 +21,14 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
+import { useQueryClient } from "@tanstack/react-query"
 
 interface TaskListProps {
-  initialTasks: Task[]
+  tasks: Task[]
 }
 
-export default function TaskList({ initialTasks }: TaskListProps) {
-  console.log("TaskList received initialTasks:", initialTasks)
-  const [tasks, setTasks] = useState<Task[]>(initialTasks)
+export default function TaskList({ tasks }: TaskListProps) {
+  const queryClient = useQueryClient()
   const [editTask, setEditTask] = useState<Task | null>(null)
   const [deleteTask, setDeleteTask] = useState<Task | null>(null)
   const [filterStatus, setFilterStatus] = useState<string>("all")
@@ -37,19 +37,28 @@ export default function TaskList({ initialTasks }: TaskListProps) {
   const [searchQuery, setSearchQuery] = useState<string>("")
 
   const handleTaskUpdated = (updatedTask: Task) => {
-    setTasks(tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task)))
+    queryClient.setQueryData(['tasks'], (oldData: Task[] | undefined) => {
+      if (!oldData) return [updatedTask]
+      return oldData.map((task) => (task.id === updatedTask.id ? updatedTask : task))
+    })
     setEditTask(null)
   }
 
   const handleTaskDeleted = (taskId: string) => {
-    setTasks(tasks.filter((task) => task.id !== taskId))
+    queryClient.setQueryData(['tasks'], (oldData: Task[] | undefined) => {
+      if (!oldData) return []
+      return oldData.filter((task) => task.id !== taskId)
+    })
     setDeleteTask(null)
   }
 
   const handleTaskCompleted = async (taskId: string, completed: boolean) => {
     try {
       const updatedTask = await completeTask(taskId, completed)
-      setTasks(tasks.map((task) => (task.id === taskId ? { ...task, completed } : task)))
+      queryClient.setQueryData(['tasks'], (oldData: Task[] | undefined) => {
+        if (!oldData) return []
+        return oldData.map((task) => (task.id === taskId ? { ...task, completed } : task))
+      })
     } catch (error) {
       console.error("Failed to update task status:", error)
     }
@@ -68,44 +77,38 @@ export default function TaskList({ initialTasks }: TaskListProps) {
     }
   }
 
-  // Filter and sort tasks
-  const filteredTasks = tasks
-    .filter((task) => {
-      // Filter by status
-      if (filterStatus === "completed" && !task.completed) return false
-      if (filterStatus === "pending" && task.completed) return false
+  // Filtrer les tâches
+  const filteredTasks = tasks.filter((task) => {
+    const matchesStatus = filterStatus === "all" || 
+      (filterStatus === "completed" && task.completed) ||
+      (filterStatus === "pending" && !task.completed)
+    
+    const matchesPriority = filterPriority === "all" || task.priority === filterPriority
+    
+    const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      task.description?.toLowerCase().includes(searchQuery.toLowerCase())
 
-      // Filter by priority
-      if (filterPriority !== "all" && task.priority !== filterPriority) return false
+    return matchesStatus && matchesPriority && matchesSearch
+  })
 
-      // Filter by search query
-      if (searchQuery && !task.title.toLowerCase().includes(searchQuery.toLowerCase())) return false
+  // Trier les tâches
+  const sortedTasks = [...filteredTasks].sort((a, b) => {
+    switch (sortBy) {
+      case "dueDate":
+        return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
+      case "priority":
+        const priorityOrder = { HIGH: 0, MEDIUM: 1, LOW: 2 }
+        return priorityOrder[a.priority] - priorityOrder[b.priority]
+      case "title":
+        return a.title.localeCompare(b.title)
+      default:
+        return 0
+    }
+  })
 
-      return true
-    })
-    .sort((a, b) => {
-      // Sort by selected field
-      switch (sortBy) {
-        case "dueDate":
-          return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
-        case "priority":
-          const priorityOrder = { high: 0, medium: 1, low: 2 }
-          return (
-            priorityOrder[a.priority as keyof typeof priorityOrder] -
-            priorityOrder[b.priority as keyof typeof priorityOrder]
-          )
-        case "title":
-          return a.title.localeCompare(b.title)
-        case "createdAt":
-          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-        default:
-          return 0
-      }
-    })
-
-  if (tasks.length === 0) {
+  if (!tasks || tasks.length === 0) {
     return (
-      <div className="text-center p-8 border rounded-lg bg-muted/30">
+      <div className="text-center p-8 border rounded-lg">
         <p className="text-muted-foreground">Aucune tâche trouvée. Créez votre première tâche!</p>
       </div>
     )
@@ -113,74 +116,59 @@ export default function TaskList({ initialTasks }: TaskListProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row gap-4 justify-between">
-        <div className="relative flex-1">
-          <Input
-            placeholder="Rechercher une tâche..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 rounded-lg"
-          />
-          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        </div>
+      <div className="flex flex-col sm:flex-row gap-4">
+        <Input
+          placeholder="Rechercher une tâche..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="max-w-sm"
+        />
         <div className="flex gap-2">
           <Select value={filterStatus} onValueChange={setFilterStatus}>
-            <SelectTrigger className="w-[130px] rounded-lg">
-              <SelectValue placeholder="Statut" />
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Filtrer par statut" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Tous</SelectItem>
+              <SelectItem value="all">Tous les statuts</SelectItem>
               <SelectItem value="completed">Terminées</SelectItem>
               <SelectItem value="pending">En cours</SelectItem>
             </SelectContent>
           </Select>
 
           <Select value={filterPriority} onValueChange={setFilterPriority}>
-            <SelectTrigger className="w-[130px] rounded-lg">
-              <SelectValue placeholder="Priorité" />
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Filtrer par priorité" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Toutes</SelectItem>
-              <SelectItem value="high">Haute</SelectItem>
-              <SelectItem value="medium">Moyenne</SelectItem>
-              <SelectItem value="low">Basse</SelectItem>
+              <SelectItem value="all">Toutes les priorités</SelectItem>
+              <SelectItem value="HIGH">Haute</SelectItem>
+              <SelectItem value="MEDIUM">Moyenne</SelectItem>
+              <SelectItem value="LOW">Basse</SelectItem>
             </SelectContent>
           </Select>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="rounded-lg">
-                <ArrowUpDown className="h-4 w-4 mr-2" />
-                Trier
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Trier par</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => setSortBy("dueDate")}>
-                Date d'échéance {sortBy === "dueDate" && "✓"}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSortBy("priority")}>
-                Priorité {sortBy === "priority" && "✓"}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSortBy("title")}>Titre {sortBy === "title" && "✓"}</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSortBy("createdAt")}>
-                Date de création {sortBy === "createdAt" && "✓"}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Select value={sortBy} onValueChange={setSortBy}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Trier par" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="dueDate">Date d'échéance</SelectItem>
+              <SelectItem value="priority">Priorité</SelectItem>
+              <SelectItem value="title">Titre</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {filteredTasks.map((task) => (
+        {sortedTasks.map((task) => (
           <Card
             key={task.id}
             className={`border-border/50 shadow-sm hover:shadow-md transition-all overflow-hidden ${task.completed ? "opacity-70" : ""}`}
           >
             <div
               className={`h-1 w-full ${
-                task.priority === "high" ? "bg-red-500" : task.priority === "medium" ? "bg-amber-500" : "bg-green-500"
+                task.priority === "HIGH" ? "bg-red-500" : task.priority === "MEDIUM" ? "bg-amber-500" : "bg-green-500"
               }`}
             />
             <CardContent className="p-5">

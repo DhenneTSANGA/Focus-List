@@ -22,10 +22,11 @@ import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { CalendarIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useTasks } from '@/app/hooks/useTasks'
 
-export default function TaskForm({ onTaskCreated }: { onTaskCreated?: () => void }) {
+export default function TaskForm() {
   const { isLoaded, isSignedIn } = useAuth()
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { createTask, isCreating } = useTasks()
   const [error, setError] = useState<string | null>(null)
   const [date, setDate] = useState<Date>()
 
@@ -37,26 +38,15 @@ export default function TaskForm({ onTaskCreated }: { onTaskCreated?: () => void
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!isLoaded || !isSignedIn) return
+    if (!isLoaded || !isSignedIn || !date) return
 
-    setIsSubmitting(true)
     setError(null)
 
     try {
-      const response = await fetch('/api/tasks', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...formData,
-          dueDate: date,
-        }),
+      await createTask({
+        ...formData,
+        dueDate: date,
       })
-
-      if (!response.ok) {
-        throw new Error('Erreur lors de la création de la tâche')
-      }
 
       // Réinitialiser le formulaire
       setFormData({
@@ -65,13 +55,8 @@ export default function TaskForm({ onTaskCreated }: { onTaskCreated?: () => void
         priority: 'MEDIUM'
       })
       setDate(undefined)
-
-      // Notifier le parent
-      onTaskCreated?.()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Une erreur est survenue')
-    } finally {
-      setIsSubmitting(false)
     }
   }
 
@@ -146,8 +131,8 @@ export default function TaskForm({ onTaskCreated }: { onTaskCreated?: () => void
         <div className="text-red-500 text-sm">{error}</div>
       )}
 
-      <Button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? 'Création...' : 'Créer la tâche'}
+      <Button type="submit" disabled={isCreating}>
+        {isCreating ? 'Création...' : 'Créer la tâche'}
       </Button>
     </form>
   )

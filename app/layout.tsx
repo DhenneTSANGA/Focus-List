@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { ClerkProvider } from "@clerk/nextjs"
-import LayoutContent from "@/components/layout-content"
+import Providers from "./providers"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -22,7 +22,9 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="fr" suppressHydrationWarning>
         <body className={inter.className}>
-          <LayoutContent>{children}</LayoutContent>
+          <Providers>
+            {children}
+          </Providers>
         </body>
       </html>
     </ClerkProvider>
