@@ -50,15 +50,6 @@ export default function Home() {
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                   </Link>
-                  <Link href="/tasks">
-                    <Button
-                      variant="outline"
-                      size="lg"
-                      className="rounded-full px-8"
-                    >
-                      Voir la démo
-                    </Button>
-                  </Link>
                 </div>
 
                 {/* Statistiques */}

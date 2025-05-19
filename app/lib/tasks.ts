@@ -2,46 +2,14 @@ import type { Task } from "./definitions"
 import prisma from "@/lib/prisma"
 import { auth } from "@clerk/nextjs/server"
 
-// Mock database for tasks (replace with actual database in production)
-let tasks: Task[] = [
-  {
-    id: "1",
-    title: "Créer une présentation",
-    description: "Préparer une présentation pour la réunion de lundi",
-    dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
-    priority: "high",
-    completed: false,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: "2",
-    title: "Répondre aux emails",
-    description: "Traiter les emails en attente dans la boîte de réception",
-    dueDate: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString(),
-    priority: "medium",
-    completed: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: "3",
-    title: "Planifier la réunion d'équipe",
-    description: "Organiser la réunion hebdomadaire et préparer l'ordre du jour",
-    dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
-    priority: "low",
-    completed: false,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-]
-
 export async function getTasks(): Promise<Task[]> {
   const { userId } = await auth()
   
   if (!userId) {
     throw new Error("Non autorisé")
   }
+
+  console.log("Fetching tasks for user:", userId)
 
   const tasks = await prisma.task.findMany({
     where: {
@@ -51,6 +19,8 @@ export async function getTasks(): Promise<Task[]> {
       createdAt: "desc"
     }
   })
+
+  console.log("Found tasks:", tasks)
 
   return tasks
 }

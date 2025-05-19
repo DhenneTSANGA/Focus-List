@@ -27,6 +27,7 @@ interface TaskListProps {
 }
 
 export default function TaskList({ initialTasks }: TaskListProps) {
+  console.log("TaskList received initialTasks:", initialTasks)
   const [tasks, setTasks] = useState<Task[]>(initialTasks)
   const [editTask, setEditTask] = useState<Task | null>(null)
   const [deleteTask, setDeleteTask] = useState<Task | null>(null)
