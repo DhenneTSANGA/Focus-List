@@ -71,7 +71,7 @@ export default function RegisterPage() {
             </div>
             <CardTitle className="text-2xl font-bold text-center">Créer un compte</CardTitle>
             <CardDescription className="text-center">
-              Entrez vos informations pour créer un compte Trello
+              Entrez vos informations pour créer un compte Focus-List
             </CardDescription>
           </CardHeader>
           <form onSubmit={onSubmit}>

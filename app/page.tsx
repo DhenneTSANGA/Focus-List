@@ -229,7 +229,7 @@ export default function Home() {
                             <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary to-primary-foreground flex items-center justify-center text-white font-bold">
                               T
                             </div>
-                            <span className="font-bold text-lg">Trello</span>
+                            <span className="font-bold text-lg">Focus-List</span>
                           </div>
                           <div className="flex items-center gap-2">
                             <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
@@ -288,7 +288,7 @@ export default function Home() {
               <div className="text-center">
                 <h2 className="text-3xl font-bold tracking-tighter md:text-4xl mb-4">Prêt à commencer?</h2>
                 <p className="text-muted-foreground mb-8 max-w-[600px] mx-auto">
-                  Rejoignez des milliers d'utilisateurs qui organisent déjà leur vie avec Trello
+                  Rejoignez des milliers d'utilisateurs qui organisent déjà leur vie avec Focus-List
                 </p>
                 <Link href="/tasks">
                   <Button
@@ -308,9 +308,9 @@ export default function Home() {
               <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-primary-foreground flex items-center justify-center text-white font-bold">
                 T
               </div>
-              <span className="font-bold text-lg">Trello</span>
+              <span className="font-bold text-lg">Focus-List</span>
             </div>
-            <p className="text-sm text-muted-foreground">© 2024 Trello. Tous droits réservés.</p>
+            <p className="text-sm text-muted-foreground">© 2024 Focus-List. Tous droits réservés.</p>
             <nav className="flex gap-6">
               <Link className="text-sm text-muted-foreground hover:text-foreground transition-colors" href="#">
                 Conditions d'utilisation

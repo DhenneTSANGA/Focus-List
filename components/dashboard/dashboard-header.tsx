@@ -40,7 +40,7 @@ export default function DashboardHeader() {
               <DashboardSidebar />
             </SheetContent>
           </Sheet>
-          <div className="font-semibold">Trello</div>
+          <div className="font-semibold">Focus-List</div>
         </div>
 
         <div className={`${isSearchOpen ? "flex" : "hidden"} md:flex items-center w-full max-w-sm relative`}>

@@ -8,7 +8,7 @@ import Providers from "./providers"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Trello - Gestion de tâches",
+  title: "Focus-List - Gestion de tâches",
   description: "Application de gestion de tâches personnelles avec authentification sécurisée",
   generator: 'v0.dev'
 }

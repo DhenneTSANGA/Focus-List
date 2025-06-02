@@ -26,7 +26,7 @@ export default function Navbar() {
             T
           </div>
           <span className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-primary to-violet-500">
-            Trello
+            Focus-List
           </span>
         </Link>
 
