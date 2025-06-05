@@ -310,7 +310,7 @@ export default function Home() {
               </div>
               <span className="font-bold text-lg">Focus-List</span>
             </div>
-            <p className="text-sm text-muted-foreground">© 2024 Focus-List. Tous droits réservés.</p>
+            <p className="text-sm text-muted-foreground">© 2025 Focus-List. Tous droits réservés.</p>
             <nav className="flex gap-6">
               <Link className="text-sm text-muted-foreground hover:text-foreground transition-colors" href="#">
                 Conditions d'utilisation
