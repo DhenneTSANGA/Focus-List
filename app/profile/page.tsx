@@ -19,19 +19,19 @@ export default function ProfilePage() {
 
   return (
     <section className="container py-8">
-      <h1 className="text-3xl font-bold mb-6">Mon profil : </h1>
+      <h1 className="text-3xl font-bold mb-6 text-center md:text-left">Mon profil : </h1>
       <Card className="w-full max-w-2xl mx-auto mb-6">
         <CardHeader>
-          <CardTitle>Informations Personnelles</CardTitle>
+          <CardTitle className="text-center md:text-left">Informations Personnelles</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
+          <div className="flex flex-col md:flex-row items-center gap-6">
             {user.imageUrl && (
               <div className="flex-shrink-0">
                 <img src={user.imageUrl} alt="Profile" className="w-32 h-32 lg:w-48 lg:h-48 rounded-full object-cover shadow-lg border-2 border-primary/20" />
               </div>
             )}
-            <div className="grid gap-2 text-center md:text-left">
+            <div className="grid gap-2 text-center md:text-left w-full">
               <p className="text-xl font-bold">
                 {user.fullName || "N/A"}
               </p>
