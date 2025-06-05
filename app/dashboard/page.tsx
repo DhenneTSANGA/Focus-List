@@ -172,9 +172,9 @@ export default function DashboardPage() {
     <section className="container py-8">
       <div className="flex items-center gap-4 mb-6">
         <Link href="/">
-          <Button variant="ghost" size="icon" className="text-muted-foreground">
+          <Button variant="ghost" className="text-muted-foreground gap-2">
             <ArrowLeft className="h-5 w-5" />
-            <span className="sr-only">Retour à l'accueil</span>
+            Retour
           </Button>
         </Link>
         <h1 className="text-3xl font-bold">Tableau de Bord de {user?.firstName || "l'utilisateur"}</h1>

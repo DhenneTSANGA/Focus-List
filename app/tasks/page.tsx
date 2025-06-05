@@ -4,6 +4,9 @@ import TaskList from "@/components/dashboard/task-list"
 import TaskForm from "@/app/components/TaskForm"
 import { useTasks } from "@/app/hooks/useTasks"
 import LayoutContent from "@/components/layout-content"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { ArrowLeft } from "lucide-react"
 
 export default function TasksPage() {
   const { tasks, isLoading } = useTasks()
@@ -21,7 +24,15 @@ export default function TasksPage() {
   return (
     <LayoutContent>
       <div className="container mx-auto py-8 px-4">
-        <h1 className="text-3xl font-bold mb-8">Mes tâches</h1>
+        <div className="flex items-center gap-4 mb-6">
+          <Link href="/">
+            <Button variant="ghost" className="text-muted-foreground gap-2">
+              <ArrowLeft className="h-5 w-5" />
+              Retour
+            </Button>
+          </Link>
+          <h1 className="text-3xl font-bold">Mes tâches</h1>
+        </div>
         
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-4">Nouvelle tâche</h2>
