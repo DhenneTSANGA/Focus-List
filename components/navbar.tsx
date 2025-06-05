@@ -90,18 +90,18 @@ export default function Navbar() {
       <div className="flex h-16 items-center justify-between py-4">
 
         {/* Section gauche: Nom de l'application */}
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2 shrink-0">
           <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-primary-foreground flex items-center justify-center text-white font-bold">
             T
           </div>
-          <span className="font-bold text-base sm:text-lg md:text-xl bg-clip-text text-transparent bg-gradient-to-r from-primary to-violet-500 whitespace-nowrap">
+          <span className="font-bold text-xs sm:text-sm md:text-xl text-primary">
             Focus-List
           </span>
         </Link>
 
         {/* Section centrale: Bouton "Mes tâches" (visible sur desktop, centré) */}
         {isSignedIn && (
-          <div className="flex-grow flex justify-center hidden md:flex">
+          <div className="hidden md:flex items-center justify-center mr-6">
             <Link 
               href="/tasks" 
               className="font-bold text-lg text-primary hover:text-violet-500 transition-colors whitespace-nowrap"
@@ -112,17 +112,9 @@ export default function Navbar() {
         )}
 
         {/* Section droite: Authentification et Thème (et bouton mobile "Mes tâches" ici) */}
-        <nav className="flex items-center gap-6">
-          {isSignedIn && (
-            <Link 
-              href="/tasks" 
-              className="font-bold text-sm sm:text-base text-primary hover:text-violet-500 transition-colors whitespace-nowrap md:hidden ml-auto mr-4"
-            >
-              Mes tâches
-            </Link>
-          )}
+        <nav className="flex items-center gap-2 sm:gap-4 md:gap-6">
           {!isSignedIn ? (
-            <>
+            <div className="flex items-center gap-2 sm:gap-4 ml-auto">
               <Link href="/sign-in" className="text-sm font-medium hover:text-primary transition-colors">
                 Se connecter
               </Link>
@@ -132,9 +124,15 @@ export default function Navbar() {
                 </Button>
               </Link>
               <ThemeToggle />
-            </>
+            </div>
           ) : (
-            <>
+            <div className="flex items-center gap-2 sm:gap-4 ml-auto">
+              <Link 
+                href="/tasks" 
+                className="font-bold text-xs sm:text-sm text-primary hover:text-violet-500 transition-colors md:hidden"
+              >
+                Mes tâches
+              </Link>
               <ThemeToggle />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -193,7 +191,7 @@ export default function Navbar() {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            </>
+            </div>
           )}
         </nav>
       </div>
