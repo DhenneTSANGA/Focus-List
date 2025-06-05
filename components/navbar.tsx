@@ -185,7 +185,7 @@ export default function Navbar() {
                     <Link href="/dashboard">Tableau de bord</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/user-profile">Profil</Link>
+                    <Link href="/profile">Profil</Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => signOut()}>
