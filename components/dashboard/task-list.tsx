@@ -9,7 +9,6 @@ import { Pencil, Trash2, Filter, ArrowUpDown } from "lucide-react"
 import { formatDate } from "@/app/lib/utils"
 import TaskEditDialog from "@/components/task-edit-dialog"
 import TaskDeleteDialog from "@/components/task-delete-dialog"
-import { completeTask } from "@/app/actions/tasks"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
   DropdownMenu,
@@ -22,6 +21,7 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { useQueryClient } from "@tanstack/react-query"
+import { useToast } from "@/hooks/use-toast"
 
 interface TaskListProps {
   tasks: Task[]
@@ -29,6 +29,7 @@ interface TaskListProps {
 
 export default function TaskList({ tasks }: TaskListProps) {
   const queryClient = useQueryClient()
+  const { toast } = useToast()
   const [editTask, setEditTask] = useState<Task | null>(null)
   const [deleteTask, setDeleteTask] = useState<Task | null>(null)
   const [filterStatus, setFilterStatus] = useState<string>("all")
@@ -54,13 +55,36 @@ export default function TaskList({ tasks }: TaskListProps) {
 
   const handleTaskCompleted = async (taskId: string, completed: boolean) => {
     try {
-      const updatedTask = await completeTask(taskId, completed)
+      const response = await fetch(`/api/tasks/${taskId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ completed }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de la mise à jour de la tâche')
+      }
+
+      const updatedTask = await response.json()
       queryClient.setQueryData(['tasks'], (oldData: Task[] | undefined) => {
         if (!oldData) return []
-        return oldData.map((task) => (task.id === taskId ? { ...task, completed } : task))
+        return oldData.map((task) => (task.id === taskId ? updatedTask : task))
+      })
+
+      toast({
+        title: "Tâche mise à jour",
+        description: "Le statut de la tâche a été mis à jour avec succès.",
+        variant: "success",
       })
     } catch (error) {
       console.error("Failed to update task status:", error)
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la mise à jour de la tâche.",
+        variant: "destructive",
+      })
     }
   }
 

@@ -10,13 +10,13 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { createTask } from "@/app/actions/tasks"
 import { CalendarIcon } from "lucide-react"
 import { format } from "date-fns"
 import { fr } from "date-fns/locale"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
+import { useToast } from "@/hooks/use-toast"
 
 interface TaskCreateDialogProps {
   open: boolean
@@ -25,6 +25,7 @@ interface TaskCreateDialogProps {
 
 export default function TaskCreateDialog({ open, onOpenChange }: TaskCreateDialogProps) {
   const router = useRouter()
+  const { toast } = useToast()
   const [loading, setLoading] = useState(false)
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
@@ -37,12 +38,22 @@ export default function TaskCreateDialog({ open, onOpenChange }: TaskCreateDialo
 
     setLoading(true)
     try {
-      await createTask({
-        title,
-        description,
-        priority,
-        dueDate: dueDate.toISOString(),
+      const response = await fetch('/api/tasks', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title,
+          description,
+          priority,
+          dueDate: dueDate.toISOString(),
+        }),
       })
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de la création de la tâche')
+      }
 
       // Reset form
       setTitle("")
@@ -50,11 +61,23 @@ export default function TaskCreateDialog({ open, onOpenChange }: TaskCreateDialo
       setPriority("MEDIUM")
       setDueDate(new Date(Date.now() + 24 * 60 * 60 * 1000))
 
+      // Show success toast
+      toast({
+        title: "Tâche créée",
+        description: "La tâche a été créée avec succès.",
+        variant: "success",
+      })
+
       // Close dialog and refresh tasks
       onOpenChange(false)
       router.refresh()
     } catch (error) {
       console.error("Failed to create task:", error)
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la création de la tâche.",
+        variant: "destructive",
+      })
     } finally {
       setLoading(false)
     }

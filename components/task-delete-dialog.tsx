@@ -11,9 +11,9 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { deleteTask } from "@/app/actions/tasks"
 import type { Task } from "@/app/lib/definitions"
 import { AlertTriangle } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
 
 interface TaskDeleteDialogProps {
   task: Task
@@ -24,16 +24,36 @@ interface TaskDeleteDialogProps {
 
 export default function TaskDeleteDialog({ task, open, onOpenChange, onTaskDeleted }: TaskDeleteDialogProps) {
   const router = useRouter()
+  const { toast } = useToast()
   const [loading, setLoading] = useState(false)
 
   const handleDelete = async () => {
     setLoading(true)
     try {
-      await deleteTask(task.id)
+      const response = await fetch(`/api/tasks/${task.id}`, {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de la suppression de la tâche')
+      }
+
       onTaskDeleted(task.id)
+      onOpenChange(false)
       router.refresh()
+
+      toast({
+        title: "Tâche supprimée",
+        description: "La tâche a été supprimée avec succès.",
+        variant: "success",
+      })
     } catch (error) {
       console.error("Failed to delete task:", error)
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la suppression de la tâche.",
+        variant: "destructive",
+      })
     } finally {
       setLoading(false)
     }

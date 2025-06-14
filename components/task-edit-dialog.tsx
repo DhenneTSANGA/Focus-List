@@ -10,7 +10,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { updateTask } from "@/app/actions/tasks"
 import type { Task } from "@/app/lib/definitions"
 import { CalendarIcon } from "lucide-react"
 import { format } from "date-fns"
@@ -18,6 +17,7 @@ import { fr } from "date-fns/locale"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
+import { useToast } from "@/hooks/use-toast"
 
 interface TaskEditDialogProps {
   task: Task
@@ -28,6 +28,7 @@ interface TaskEditDialogProps {
 
 export default function TaskEditDialog({ task, open, onOpenChange, onTaskUpdated }: TaskEditDialogProps) {
   const router = useRouter()
+  const { toast } = useToast()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [title, setTitle] = useState(task.title)
@@ -43,24 +44,42 @@ export default function TaskEditDialog({ task, open, onOpenChange, onTaskUpdated
     setError(null)
     
     try {
-      const updatedTask = await updateTask({
-        id: task.id,
-        title,
-        description,
-        priority,
-        dueDate: dueDate.toISOString(),
-        completed: task.completed,
-        userId: task.userId,
-        createdAt: task.createdAt,
-        updatedAt: new Date().toISOString(),
+      const response = await fetch(`/api/tasks/${task.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title,
+          description,
+          priority,
+          dueDate: dueDate.toISOString(),
+          completed: task.completed,
+        }),
       })
 
+      if (!response.ok) {
+        throw new Error('Erreur lors de la mise à jour de la tâche')
+      }
+
+      const updatedTask = await response.json()
       onTaskUpdated(updatedTask)
       onOpenChange(false)
       router.refresh()
+
+      toast({
+        title: "Tâche mise à jour",
+        description: "La tâche a été mise à jour avec succès.",
+        variant: "success",
+      })
     } catch (error) {
       console.error("Failed to update task:", error)
       setError(error instanceof Error ? error.message : 'Une erreur est survenue lors de la mise à jour')
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la mise à jour de la tâche.",
+        variant: "destructive",
+      })
     } finally {
       setLoading(false)
     }
