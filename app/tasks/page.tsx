@@ -36,7 +36,7 @@ export default function TasksPage() {
         
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-4">Nouvelle tâche</h2>
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-background rounded-lg shadow p-6">
             <TaskForm />
           </div>
         </div>
