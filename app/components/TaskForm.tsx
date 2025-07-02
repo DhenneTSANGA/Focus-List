@@ -23,12 +23,14 @@ import { fr } from 'date-fns/locale'
 import { CalendarIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useTasks } from '@/app/hooks/useTasks'
+import { useToast } from '@/hooks/use-toast'
 
 export default function TaskForm() {
   const { isLoaded, isSignedIn } = useAuth()
   const { createTask, isCreating } = useTasks()
   const [error, setError] = useState<string | null>(null)
   const [date, setDate] = useState<Date>()
+  const { toast } = useToast()
 
   const [formData, setFormData] = useState({
     title: '',
@@ -46,6 +48,12 @@ export default function TaskForm() {
       await createTask({
         ...formData,
         dueDate: date,
+      })
+
+      toast({
+        title: 'Tâche créée avec succès',
+        description: 'Votre tâche a bien été ajoutée à la liste.',
+        variant: 'success',
       })
 
       // Réinitialiser le formulaire
