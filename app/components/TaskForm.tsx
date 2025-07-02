@@ -31,6 +31,7 @@ export default function TaskForm() {
   const [error, setError] = useState<string | null>(null)
   const [date, setDate] = useState<Date>()
   const { toast } = useToast()
+  const [calendarOpen, setCalendarOpen] = useState(false)
 
   const [formData, setFormData] = useState({
     title: '',
@@ -93,7 +94,7 @@ export default function TaskForm() {
 
       <div className="flex gap-4">
         <div className="flex-1">
-          <Popover>
+          <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
@@ -101,6 +102,7 @@ export default function TaskForm() {
                   'w-full justify-start text-left font-normal',
                   !date && 'text-muted-foreground'
                 )}
+                onClick={() => setCalendarOpen(true)}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {date ? format(date, 'PPP', { locale: fr }) : 'Sélectionner une date'}
@@ -110,7 +112,10 @@ export default function TaskForm() {
               <Calendar
                 mode="single"
                 selected={date}
-                onSelect={setDate}
+                onSelect={(selectedDate) => {
+                  setDate(selectedDate)
+                  if (selectedDate) setCalendarOpen(false)
+                }}
                 initialFocus
                 locale={fr}
               />
