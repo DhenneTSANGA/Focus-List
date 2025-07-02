@@ -210,43 +210,12 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      {/* Main content grid: Calendar + Monthly Stats & Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Left Column: Calendar */}
-        <div>
-          <h2 className="text-2xl font-bold mb-4">Calendrier des Tâches</h2>
-          <Card className="mb-8 p-4 h-[400px] flex items-center justify-center">
-            <CardContent className="flex justify-center p-0">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "w-[280px] justify-start text-left font-normal",
-                      !selectedCalendarDate && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {selectedCalendarDate ? format(selectedCalendarDate, "PPP", { locale: fr }) : "Sélectionner une date"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={selectedCalendarDate}
-                    onSelect={setSelectedCalendarDate}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Right Column: Monthly Statistics & Charts */}
+      {/* Stats mensuelles et annuelles côte à côte */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        {/* Statistiques Mensuelles */}
         <div>
           <h2 className="text-2xl font-bold mb-4">Statistiques Mensuelles</h2>
-          <div className="grid gap-6 mb-8">
+          <div className="grid gap-6">
             {Object.entries(monthlyStats).sort(([a], [b]) => a.localeCompare(b)).map(([monthKey, stats]) => (
               <Card key={monthKey} className="flex flex-col md:flex-row justify-between items-center p-4">
                 <CardTitle className="mb-2 md:mb-0 text-xl md:text-2xl">{monthKey}</CardTitle>
@@ -271,62 +240,11 @@ export default function DashboardPage() {
               </Card>
             ))}
           </div>
-
-          {/* Monthly Bar Chart */}
-          <h2 className="text-2xl font-bold mb-4">Graphique Mensuel des Tâches</h2>
-          <Card className="mb-8 p-4">
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart
-                  data={monthlyChartData}
-                  margin={{
-                    top: 20, right: 30, left: 20, bottom: 5,
-                  }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="total" name="Total" fill="#8884d8" />
-                  <Bar dataKey="completed" name="Terminées" fill="#82ca9d" />
-                  <Bar dataKey="pending" name="En Cours" fill="#ffc658" />
-                  <Bar dataKey="missed" name="Manquées" fill="#ff7300" />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          {/* Monthly Line Chart */}
-          <h2 className="text-2xl font-bold mb-4">Tendance Mensuelle des Tâches Terminées</h2>
-          <Card className="mb-8 p-4">
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart
-                  data={monthlyChartData}
-                  margin={{
-                    top: 20, right: 30, left: 20, bottom: 5,
-                  }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Line type="monotone" dataKey="completed" name="Tâches Terminées" stroke="#82ca9d" activeDot={{ r: 8 }} />
-                </LineChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
         </div>
-      </div>
-
-      {/* Second main content grid: Yearly Stats & Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-        {/* Left Column: Yearly Statistics */}
+        {/* Statistiques Annuelles */}
         <div>
           <h2 className="text-2xl font-bold mb-4">Statistiques Annuelles</h2>
-          <div className="grid gap-6 mb-8">
+          <div className="grid gap-6">
             {Object.entries(yearlyStats).sort(([a], [b]) => a.localeCompare(b)).map(([yearKey, stats]) => (
               <Card key={yearKey} className="flex flex-col md:flex-row justify-between items-center p-4">
                 <CardTitle className="mb-2 md:mb-0 text-xl md:text-2xl">{yearKey}</CardTitle>
@@ -352,15 +270,18 @@ export default function DashboardPage() {
             ))}
           </div>
         </div>
+      </div>
 
-        {/* Right Column: Yearly Charts */}
+      {/* Tendances mensuelle et annuelle côte à côte */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        {/* Tendance Mensuelle */}
         <div>
-          <h2 className="text-2xl font-bold mb-4">Graphique Annuel des Tâches</h2>
+          <h2 className="text-2xl font-bold mb-4">Tendance Mensuelle des Tâches Terminées</h2>
           <Card className="mb-8 p-4">
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
-                <BarChart
-                  data={yearlyChartData}
+                <LineChart
+                  data={monthlyChartData}
                   margin={{
                     top: 20, right: 30, left: 20, bottom: 5,
                   }}
@@ -370,17 +291,16 @@ export default function DashboardPage() {
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="total" name="Total" fill="#8884d8" />
-                  <Bar dataKey="completed" name="Terminées" fill="#82ca9d" />
-                  <Bar dataKey="pending" name="En Cours" fill="#ffc658" />
-                  <Bar dataKey="missed" name="Manquées" fill="#ff7300" />
-                </BarChart>
+                  <Line type="monotone" dataKey="completed" name="Tâches Terminées" stroke="#82ca9d" activeDot={{ r: 8 }} />
+                </LineChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>
-
+        </div>
+        {/* Tendance Annuelle */}
+        <div>
           <h2 className="text-2xl font-bold mb-4">Tendance Annuelle des Tâches Terminées</h2>
-          <Card className="p-4">
+          <Card className="mb-8 p-4">
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart
