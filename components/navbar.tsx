@@ -115,12 +115,9 @@ export default function Navbar() {
         <nav className="flex items-center gap-2 sm:gap-4 md:gap-6">
           {!isSignedIn ? (
             <div className="flex items-center gap-2 sm:gap-4 ml-auto">
-              <Link href="/sign-in" className="text-sm font-medium hover:text-primary transition-colors">
-                Se connecter
-              </Link>
-              <Link href="/sign-up">
+              <Link href="/sign-in">
                 <Button variant="outline" className="rounded-full shadow-sm hover:shadow-md transition-all">
-                  S'inscrire
+                  Se connecter
                 </Button>
               </Link>
               <ThemeToggle />
