@@ -1,7 +1,7 @@
 'use client'
 
 import TaskList from "@/components/dashboard/task-list"
-import TaskForm from "@/app/components/TaskForm"
+import TaskForm from "@/components/TaskForm"
 import { useTasks } from "@/app/hooks/useTasks"
 import LayoutContent from "@/components/layout-content"
 import Link from "next/link"
