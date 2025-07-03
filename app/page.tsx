@@ -312,13 +312,13 @@ export default function Home() {
             </div>
             <p className="text-sm text-muted-foreground">© 2025 Focus-List. Tous droits réservés.</p>
             <nav className="flex gap-6">
-              <Link className="text-sm text-muted-foreground hover:text-foreground transition-colors" href="#">
+              <Link className="text-sm text-muted-foreground hover:text-foreground transition-colors" href="/terms">
                 Conditions d'utilisation
               </Link>
-              <Link className="text-sm text-muted-foreground hover:text-foreground transition-colors" href="#">
+              <Link className="text-sm text-muted-foreground hover:text-foreground transition-colors" href="/privacy">
                 Politique de confidentialité
               </Link>
-              <Link className="text-sm text-muted-foreground hover:text-foreground transition-colors" href="#">
+              <Link className="text-sm text-muted-foreground hover:text-foreground transition-colors" href="/contact">
                 Contact
               </Link>
             </nav>
