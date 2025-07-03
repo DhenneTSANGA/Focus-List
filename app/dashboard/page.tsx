@@ -13,6 +13,8 @@ import { format } from "date-fns"
 import { fr } from "date-fns/locale"
 import { cn } from "@/lib/utils"
 import { CalendarIcon } from "lucide-react"
+import { useAuth } from "@clerk/nextjs"
+import { useRouter } from "next/navigation"
 
 // Définition de l'interface Task (doit correspondre à la structure de votre API /api/tasks)
 interface Task {
@@ -53,6 +55,8 @@ interface ChartData {
 
 export default function DashboardPage() {
   const { isLoaded, isSignedIn, user } = useUser()
+  const { isLoaded: authLoaded, isSignedIn: authSignedIn } = useAuth();
+  const router = useRouter();
   const [totalTasks, setTotalTasks] = useState(0)
   const [completedTasks, setCompletedTasks] = useState(0)
   const [pendingTasks, setPendingTasks] = useState(0)
@@ -63,6 +67,12 @@ export default function DashboardPage() {
   const [selectedCalendarDate, setSelectedCalendarDate] = useState<Date | undefined>(new Date())
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (authLoaded && !authSignedIn) {
+      router.replace("/unauthorized");
+    }
+  }, [authLoaded, authSignedIn, router]);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -151,6 +161,10 @@ export default function DashboardPage() {
 
     fetchTasks()
   }, [isSignedIn])
+
+  if (!authLoaded || !authSignedIn) {
+    return null;
+  }
 
   if (!isLoaded || !isSignedIn || loading) {
     return (

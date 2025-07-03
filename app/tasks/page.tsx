@@ -7,9 +7,24 @@ import LayoutContent from "@/components/layout-content"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
+import { useAuth } from "@clerk/nextjs"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
 
 export default function TasksPage() {
   const { tasks, isLoading } = useTasks()
+  const { isLoaded, isSignedIn } = useAuth()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (isLoaded && !isSignedIn) {
+      router.replace("/unauthorized")
+    }
+  }, [isLoaded, isSignedIn, router])
+
+  if (!isLoaded || !isSignedIn) {
+    return null
+  }
 
   if (isLoading) {
     return (

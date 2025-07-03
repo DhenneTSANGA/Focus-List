@@ -1,6 +1,20 @@
+"use client";
 import LayoutContent from '@/components/layout-content'
+import { useAuth } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function ContactPage() {
+  const { isLoaded, isSignedIn } = useAuth();
+  const router = useRouter();
+  useEffect(() => {
+    if (isLoaded && !isSignedIn) {
+      router.replace("/unauthorized");
+    }
+  }, [isLoaded, isSignedIn, router]);
+  if (!isLoaded || !isSignedIn) {
+    return null;
+  }
   return (
     <LayoutContent>
       <div className="container mx-auto py-12 px-4 max-w-2xl">
